@@ -1,5 +1,14 @@
 # Godot Utilities
 
+- [Setup Dependencies](#setup-dependencies)
+  - [Through NuGet:](#through-nuget)
+  - [Refer to project directly (With cloning first)](#refer-to-project-directly-with-cloning-first)
+- [Setup Project](#setup-project)
+- [Usage - Injection and Logging in Nodes](#usage---injection-and-logging-in-nodes)
+- [Usage - Scene Manager](#usage---scene-manager)
+- [Usage - Registering Factories](#usage---registering-factories)
+
+
 Utility library for implement state of the art application development in Godot 4. Includes:
 
 - Using .NET Standards:
