@@ -76,27 +76,28 @@ Add project reference to your Godot *.csproj project:
     ```
 
   3. Call AppHost from your AutoloadScript
-    ```cs
-    using Godot;
 
-    public partial class AppHostLoader : Node {
-      #region Properties
-      public GwenAppHost AppHost { get; private set; }
-      #endregion
+      ```cs
+      using Godot;
 
-      #region Ctor
-      public AppHostLoader() {
-        this.AppHost = new GwenAppHost(this);
+      public partial class AppHostLoader : Node {
+        #region Properties
+        public GwenAppHost AppHost { get; private set; }
+        #endregion
+
+        #region Ctor
+        public AppHostLoader() {
+          this.AppHost = new GwenAppHost(this);
+        }
+        #endregion
+
+        #region Public Methods
+        public override void _Ready() {
+          this.AppHost.Start();
+        }
+        #endregion
       }
-      #endregion
-
-      #region Public Methods
-      public override void _Ready() {
-        this.AppHost.Start();
-      }
-      #endregion
-    }
-    ```
+      ```
 
   4. Enjoy!
 
@@ -164,22 +165,22 @@ This will result in:
     See above for registering the bootstrapper.
 
   3. Load a Scene
-    ```cs
-    using GoDough.Composition.Attributes;
-    using GoDough.Composition.Extensions;
+      ```cs
+      using GoDough.Composition.Attributes;
+      using GoDough.Composition.Extensions;
 
-    public partial class MyNode : Node {
-      // Add [Inject] property to any injected service
-      [Inject]
-      public SceneManagementService<Scenes> SceneManager { get; set; }
+      public partial class MyNode : Node {
+        // Add [Inject] property to any injected service
+        [Inject]
+        public SceneManagementService<Scenes> SceneManager { get; set; }
 
-      public override void _Ready() {
-        this.WireNode();
+        public override void _Ready() {
+          this.WireNode();
 
-        this.SceneManager.LoadScene(Scenes.World);
+          this.SceneManager.LoadScene(Scenes.World);
+        }
       }
-    }
-    ```
+      ```
 
 ## Usage - Registering Factories
 
