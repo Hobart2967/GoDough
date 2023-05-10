@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Extensions.Logging;
 
-// TODO: OnSceneChanged Event
 // TODO: OnSceneChanging Event - Scene Change blocker?
 
 namespace GoDough.Visuals {
   public class SceneManagementService<TSceneEnum>
     where TSceneEnum : System.Enum {
+
+    public delegate void SceneChangeEventHandler(object sender, SceneChangeEventArgs<TSceneEnum> e);
+
     #region Private Fields
     private readonly Dictionary<TSceneEnum, string> _registeredScenes = new Dictionary<TSceneEnum, string>();
     private readonly ILogger<SceneManagementService<TSceneEnum>> _logger;
@@ -29,6 +31,10 @@ namespace GoDough.Visuals {
     public SceneManagementService(
       ILogger<SceneManagementService<TSceneEnum>> logger,
       IAppHostNodeProvider appHostNodeProvider) => (_logger, _appHostNodeProvider) = (logger, appHostNodeProvider);
+    #endregion
+
+    #region Events
+    public event SceneChangeEventHandler OnSceneChanged;
     #endregion
 
     #region Public Methods
@@ -71,6 +77,12 @@ namespace GoDough.Visuals {
       appHostNode.GetTree().ChangeSceneToFile(fileName);
 
       this.CurrentScene = sceneKey;
+
+      if (this.OnSceneChanged != null) {
+        this.OnSceneChanged.Invoke(
+          this,
+          new SceneChangeEventArgs<TSceneEnum>(sceneKey));
+      }
 
       this._logger.LogInformation("Done Loading Scene '{0}'",
         Enum.GetName(typeof(TSceneEnum), sceneKey),
