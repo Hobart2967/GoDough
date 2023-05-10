@@ -7,6 +7,15 @@
 - [Usage - Injection and Logging in Nodes](#usage---injection-and-logging-in-nodes)
 - [Usage - Scene Manager](#usage---scene-manager)
 - [Usage - Registering Factories](#usage---registering-factories)
+- [Unique Node Bindings](#unique-node-bindings)
+  - [Using property name as node name.](#using-property-name-as-node-name)
+  - [Using a different property name than the node's name.](#using-a-different-property-name-than-the-nodes-name)
+- [Usage - Components](#usage---components)
+  - [Configuration](#configuration)
+  - [Create a component definition:](#create-a-component-definition)
+  - [Registering the component](#registering-the-component)
+  - [Creating an instance of the component](#creating-an-instance-of-the-component)
+- [Binding a Node to another class](#binding-a-node-to-another-class)
 
 
 Utility library for implement state of the art application development in Godot 4. Includes:
@@ -214,3 +223,143 @@ This will result in:
       }
     }
     ```
+
+## Unique Node Bindings
+
+### Using property name as node name.
+1. Declare a node as "Unique Node" inside the scene.
+2. Attach script to scene
+3. Inside the script, create a property with the exact same name as the unique node.
+4. Add `[UniqueNode]` attribute to that property
+5. Inside the `_Ready` callback method, add a call to `this.BindToViewModel()`.
+
+    ```cs
+    using Godot;
+    using GoDough.Visuals;
+    using GoDough.Visuals.Attributes;
+
+    public partial class MyPopup : Panel
+    {
+      [UniqueNode]
+      public LineEdit MyTextField { get; set; }
+
+      public override void _Ready() {
+        this.BindToViewModel();
+      }
+    }
+    ```
+
+### Using a different property name than the node's name.
+1. Declare a node as "Unique Node" inside the scene.
+2. Attach script to scene
+3. Inside the script, create a property that should hold the desired node.
+4. Add `[UniqueNode("MyUniqueNodeName")]` attribute to that property. The string should contain the name that you gave it in Godot editor.
+5. Inside the `_Ready` callback method, add a call to `this.BindToViewModel()`.
+
+    ```cs
+    using Godot;
+    using GoDough.Visuals;
+    using GoDough.Visuals.Attributes;
+
+    public partial class MyPopup : Panel
+    {
+      [UniqueNode("MyUniqueNodeName")]
+      public LineEdit MyTextField { get; set; }
+
+      public override void _Ready() {
+        this.BindToViewModel();
+      }
+    }
+    ```
+
+## Usage - Components
+
+### Configuration
+
+Inside your `IServiceCollection` configuration, add:
+
+```cs
+  using GoDough.Visuals.Components;
+
+    // ...
+    public override void ConfigureServices(IServiceCollection services) {
+      //...
+      services
+        .AddComponentFactory();
+    }
+```
+
+### Create a component definition:
+
+```cs
+using Godot;
+using GoDough.Visuals.Attributes;
+using GoDough.Visuals.Components;
+using Gwen.Network.Models.Character;
+
+namespace Gwen.Client.Scenes.CharacterList {
+  [SceneBinding("res://prefabs/my-component.tscn")]
+  public class MyComponent : Component {
+    [UniqueNode]
+    public Button MyButton { get; set; }
+  }
+}
+```
+
+### Registering the component
+
+Inside your `IServiceCollection` configuration, add:
+
+```cs
+public override void ConfigureServices(IServiceCollection services) {
+  services.AddTransient<MyComponent>();
+}
+```
+
+### Creating an instance of the component
+
+Inject `ComponentFactory` into your class, then run:
+
+```csharp
+var myComponent = this.ComponentFactory.Create<CharacterComponent>();
+
+var rootNode = characterComponent.SceneRoot; // Access Node
+```
+
+
+## Binding a Node to another class
+
+You can use a node to bind it to another class, accessing unique nodes using the attribute.
+
+1. Create class containing properties for child nodes with a unique name:
+
+```csharp
+using Godot;
+using GoDough.Visuals;
+using GoDough.Visuals.Attributes;
+
+public class ViewBindingClass {
+  [UniqueNode]
+  public LineEdit MyTextBox { get; set; }
+}
+```
+
+2. Use `BindToViewModel` extension method at a place where you have access to the desired node, while passing the `ViewBindingClass`  instance as a parameter:
+
+```csharp
+using Godot;
+using GoDough.Visuals;
+using GoDough.Visuals.Attributes;
+
+public partial class MyPopup : Panel {
+
+  public override void _Ready() {
+    var viewBindings = new ViewBindingClass();
+
+    this.BindToViewModel(viewBindings);
+
+    viewBindings.MyTextBox.Text = "Blub";
+  }
+
+}
+```
