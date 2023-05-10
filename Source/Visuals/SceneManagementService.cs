@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Extensions.Logging;
 
+// TODO: Current Scene Property
+// TODO: OnSceneChanged Event
+// TODO: OnSceneChanging Event - Scene Change blocker?
+
 namespace GoDough.Visuals {
   public class SceneManagementService<TSceneEnum>
     where TSceneEnum : System.Enum {
