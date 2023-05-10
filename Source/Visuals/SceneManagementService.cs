@@ -90,8 +90,9 @@ namespace GoDough.Visuals {
 
     }
 
-    public object ConfigureInitialScene(TSceneEnum login) {
+    public SceneManagementService<TSceneEnum> ConfigureInitialScene(TSceneEnum login) {
       this.CurrentScene = login;
+      return this;
     }
     #endregion
   }
