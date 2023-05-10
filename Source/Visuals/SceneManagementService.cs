@@ -61,9 +61,14 @@ namespace GoDough.Visuals {
       if (this._appHostNodeProvider == null) {
         this._logger.LogInformation("_appHostNodeProvider null");
       }
-      var appHostNode = this._appHostNodeProvider.GetNode();
 
+      var appHostNode = this._appHostNodeProvider.GetNode();
       appHostNode.GetTree().ChangeSceneToFile(fileName);
+
+      this._logger.LogInformation("Done Loading Scene '{0}'",
+        Enum.GetName(typeof(TSceneEnum), sceneKey),
+        fileName);
+
     }
     #endregion
   }
