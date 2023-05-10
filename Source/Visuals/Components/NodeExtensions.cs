@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using GoDough.Visuals.Attributes;
 
-namespace GoDough.Visuals {
+namespace GoDough.Visuals.Components {
   public static class NodeExtensions {
     public static Node BindToViewModel(this Node node, object boundInstance = null) {
       if (boundInstance == null) {
@@ -23,9 +23,16 @@ namespace GoDough.Visuals {
           ? nodeBinding.Property.Name
           : nodeBinding.NodeAttribute.SpecificName;
 
+        var uniqueNode = node.GetNode(String.Format("%{0}", nodeName));
+        if (uniqueNode == null && !nodeBinding.NodeAttribute.IgnoreInexistent) {
+          throw new NodeNotFoundException(
+            "Node with name {0} could not be found in the current scene tree.",
+            nodeName);
+        }
+
         nodeBinding.Property.SetValue(
           boundInstance,
-          node.GetNode(String.Format("%{0}", nodeName)));
+          uniqueNode);
       }
 
       return node;
