@@ -4,13 +4,16 @@
   - [Through NuGet:](#through-nuget)
   - [Refer to project directly (With cloning first)](#refer-to-project-directly-with-cloning-first)
 - [Setup Project](#setup-project)
-- [Usage - Injection and Logging in Nodes](#usage---injection-and-logging-in-nodes)
-- [Usage - Scene Manager](#usage---scene-manager)
-- [Usage - Registering Factories](#usage---registering-factories)
+- [Injection and Logging in Nodes](#injection-and-logging-in-nodes)
+- [Scene Manager](#scene-manager)
+  - [Registering Scenes](#registering-scenes)
+  - [Load a Scene](#load-a-scene)
+  - [Listening to Scene changes](#listening-to-scene-changes)
+- [Registering Service Factories](#registering-service-factories)
 - [Unique Node Bindings](#unique-node-bindings)
   - [Using property name as node name.](#using-property-name-as-node-name)
   - [Using a different property name than the node's name.](#using-a-different-property-name-than-the-nodes-name)
-- [Usage - Components](#usage---components)
+- [Components](#components)
   - [Configuration](#configuration)
   - [Create a component definition:](#create-a-component-definition)
   - [Registering the component](#registering-the-component)
@@ -119,7 +122,7 @@ Add project reference to your Godot *.csproj project:
 
   4. Enjoy!
 
-## Usage - Injection and Logging in Nodes
+## Injection and Logging in Nodes
 
 ```cs
 using GoDough.Composition.Attributes;
@@ -145,7 +148,9 @@ This will result in:
 ```
 
 
-## Usage - Scene Manager
+## Scene Manager
+### Registering Scenes
+
 1. Create a Scenes Enum with all your scene names.
     ```cs
     public enum Scenes {
@@ -182,7 +187,7 @@ This will result in:
 
     See above for registering the bootstrapper.
 
-  3. Load a Scene
+### Load a Scene
       ```cs
       using GoDough.Composition.Attributes;
       using GoDough.Composition.Extensions;
@@ -199,8 +204,21 @@ This will result in:
         }
       }
       ```
+### Listening to Scene changes
 
-## Usage - Registering Factories
+You can always request the current scene via the `CurrentScene` properties.
+
+If you want to get notified for scene changes, you can subscribe to the `OnSceneChanged` event:
+
+```cs
+this._sceneManager.OnSceneChanged += (s, e) => {
+  if (e.SceneKey == SceneNames.Main) {
+    GD.Print("Yay!");
+  }
+};
+```
+
+## Registering Service Factories
 
 1. Call `services.AddFactory` with the Class Type to created inside `AppHost.ConfigureServices`
     ```cs
@@ -272,7 +290,7 @@ This will result in:
     }
     ```
 
-## Usage - Components
+## Components
 
 ### Configuration
 
