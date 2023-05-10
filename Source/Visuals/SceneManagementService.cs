@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Extensions.Logging;
 
-// TODO: Current Scene Property
 // TODO: OnSceneChanged Event
 // TODO: OnSceneChanging Event - Scene Change blocker?
 
@@ -17,6 +16,8 @@ namespace GoDough.Visuals {
     #endregion
 
     #region Properties
+    public TSceneEnum CurrentScene { get; set; }
+
     public ReadOnlyDictionary<TSceneEnum, string> RegisteredSceneFiles {
       get {
         return new ReadOnlyDictionary<TSceneEnum, string>(this._registeredScenes);
@@ -68,6 +69,8 @@ namespace GoDough.Visuals {
 
       var appHostNode = this._appHostNodeProvider.GetNode();
       appHostNode.GetTree().ChangeSceneToFile(fileName);
+
+      this.CurrentScene = sceneKey;
 
       this._logger.LogInformation("Done Loading Scene '{0}'",
         Enum.GetName(typeof(TSceneEnum), sceneKey),
