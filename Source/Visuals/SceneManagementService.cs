@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Godot;
 using Microsoft.Extensions.Logging;
 
 // TODO: OnSceneChanging Event - Scene Change blocker?
@@ -76,18 +78,24 @@ namespace GoDough.Visuals {
       var appHostNode = this._appHostNodeProvider.GetNode();
       appHostNode.GetTree().ChangeSceneToFile(fileName);
 
-      this.CurrentScene = sceneKey;
+      var task = this.WaitForNextFrame(appHostNode, () => {
+        this.CurrentScene = sceneKey;
 
-      if (this.OnSceneChanged != null) {
-        this.OnSceneChanged.Invoke(
-          this,
-          new SceneChangeEventArgs<TSceneEnum>(sceneKey));
-      }
+        if (this.OnSceneChanged != null) {
+            this.OnSceneChanged.Invoke(
+            this,
+            new SceneChangeEventArgs<TSceneEnum>(sceneKey));
+        }
 
-      this._logger.LogInformation("Done Loading Scene '{0}'",
-        Enum.GetName(typeof(TSceneEnum), sceneKey),
-        fileName);
+        this._logger.LogInformation("Done Loading Scene '{0}'",
+          Enum.GetName(typeof(TSceneEnum), sceneKey),
+          fileName);
+      });
+    }
 
+    private async Task WaitForNextFrame(Node node, Action value) {
+      await node.ToSignal(node.GetTree(), "process_frame");
+      value();
     }
 
     public SceneManagementService<TSceneEnum> ConfigureInitialScene(TSceneEnum login) {
