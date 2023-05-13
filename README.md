@@ -200,22 +200,22 @@ This will result in:
     See above for registering the bootstrapper.
 
 ### Load a Scene
-      ```cs
-      using GoDough.Composition.Attributes;
-      using GoDough.Composition.Extensions;
+```cs
+using GoDough.Composition.Attributes;
+using GoDough.Composition.Extensions;
 
-      public partial class MyNode : Node {
-        // Add [Inject] property to any injected service
-        [Inject]
-        public SceneManagementService<Scenes> SceneManager { get; set; }
+public partial class MyNode : Node {
+	// Add [Inject] property to any injected service
+	[Inject]
+	public SceneManagementService<Scenes> SceneManager { get; set; }
 
-        public override void _Ready() {
-          this.WireNode();
+	public override void _Ready() {
+	  this.WireNode();
 
-          this.SceneManager.LoadScene(Scenes.World);
-        }
-      }
-      ```
+	  this.SceneManager.LoadScene(Scenes.World);
+	}
+}
+```
 ### Listening to Scene changes
 
 You can always request the current scene via the `CurrentScene` properties.
