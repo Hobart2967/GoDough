@@ -8,6 +8,7 @@ using Godot;
 using GoDough.Runtime.LivecycleHooks;
 using GoDough.Diagnostics.Logging;
 using GoDough.Visuals;
+using System;
 
 namespace GoDough.Runtime {
   public class AppHost {
@@ -19,6 +20,12 @@ namespace GoDough.Runtime {
 
     #region Properties
     public IHost Application { get; private set; }
+    public delegate void ProcessEventHandler(object sender, double delta);
+    public delegate void InputEventHandler(object sender, InputEvent ev);
+
+    public event ProcessEventHandler OnProcess;
+    public event ProcessEventHandler OnPhysicsProcess;
+    public event InputEventHandler OnInput;
 
     private static AppHost? _instance = null;
     public static AppHost? Instance {
@@ -78,10 +85,40 @@ namespace GoDough.Runtime {
       }
     }
 
+    public void PhysicsProcess(double delta) {
+      if (this.OnPhysicsProcess != null) {
+        this.OnPhysicsProcess.Invoke(this, delta);
+      }
+
+      this.InvokeLifeCycleHooks<IOnPhysicsProcess>(x =>
+        x.OnPhysicsProcess(delta));
+    }
+
+    public void Input(InputEvent ev) {
+      if (this.OnInput != null) {
+        this.OnInput.Invoke(this, ev);
+      }
+
+      this.InvokeLifeCycleHooks<IOnInput>(x =>
+        x.OnInput(ev));
+    }
+
+
     public void Process(double delta) {
-      var framebasedServices = this.Application.Services.GetServices<IOnProcess>();
+      if (this.OnProcess != null) {
+        this.OnProcess.Invoke(this, delta);
+      }
+
+      this.InvokeLifeCycleHooks<IOnProcess>(x =>
+        x.OnProcess(delta));
+    }
+    #endregion
+
+    #region Private Methods
+    private void InvokeLifeCycleHooks<T>(Action<T> action) {
+      var framebasedServices = this.Application.Services.GetServices<T>();
       foreach(var service in framebasedServices) {
-        service.OnProcess(delta);
+        action(service);
       }
     }
     #endregion

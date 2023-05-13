@@ -116,6 +116,18 @@ Add project reference to your Godot *.csproj project:
         public override void _Ready() {
           this.AppHost.Start();
         }
+
+        public override void _Process(double delta) {
+          this.AppHost.Process(delta);
+        }
+
+        public override void _PhysicsProcess(double delta) {
+          this.AppHost.PhysicsProcess(delta);
+        }
+
+        public override void _Input(InputEvent ev) {
+          this.AppHost.PhysicsProcess(delta);
+        }
         #endregion
       }
       ```
@@ -317,7 +329,7 @@ using Gwen.Network.Models.Character;
 
 namespace Gwen.Client.Scenes.CharacterList {
   [SceneBinding("res://prefabs/my-component.tscn")]
-  public class MyComponent : Component {
+  public class MyComponent : Component<Camera3D> { // Make sure to set the correct root type as generic, otherwise set "Node".
     [UniqueNode]
     public Button MyButton { get; set; }
   }
