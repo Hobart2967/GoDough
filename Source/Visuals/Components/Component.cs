@@ -21,7 +21,8 @@ namespace GoDough.Visuals.Components {
       appHost.OnProcess += (s, delta) => this.OnProcess(delta);
       appHost.OnPhysicsProcess += (s, delta) => this.OnPhysicsProcess(delta);
       appHost.OnInput += (s, ev) => this.OnInput(ev);
-      //appHost.OnReady += (s, e) => this.OnReady();
+
+      this.OnReady();
     }
 
     public virtual void OnInput(InputEvent ev) { }
