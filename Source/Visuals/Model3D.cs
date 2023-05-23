@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using GoDough.Composition.Extensions;
 using GoDough.Visuals.Extensions;
 using BoundingBox = Godot.Aabb;
 
