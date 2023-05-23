@@ -1,7 +1,7 @@
 using Godot;
 
 namespace GoDough.Runtime {
-  public class GodotApi : IGodotApi {
+  internal class GodotApi : IGodotApi {
     public PackedScene LoadScene(string fileName) {
       return (PackedScene)this.LoadResource(fileName);
     }

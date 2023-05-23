@@ -13,7 +13,7 @@ namespace GoDough.Visuals.Extensions {
     }
 
     public static Aabb GetRotatedAndTransformedAabb(this MeshInstance3D visualInstance3D) {
-      var source = visualInstance3D.GetAabb();
+      var source = visualInstance3D.Mesh.GetAabb();
 
       var vertices = new Vector3[]{
         source.Position, //bottomLeftFront,

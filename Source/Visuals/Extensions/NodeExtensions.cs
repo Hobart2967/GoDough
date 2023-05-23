@@ -3,25 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
+using BoundingBox = Godot.Aabb;
+
 namespace GoDough.Visuals.Extensions {
   public static class NodeExtensions {
-    public static Vector3 GetContentsSize(this Node3D node, string groupName = "Mesh") {
-      var nodes = new List<MeshInstance3D>();
-      if (node is MeshInstance3D) {
-        nodes.Add(node as MeshInstance3D);
-      } else {
-        nodes = node
-          .FindAllChildren(x => x.IsInGroup(groupName))
-          .OfType<MeshInstance3D>()
-          .ToList();
-      }
-
-      var aabbs = nodes
+    public static BoundingBox GetContentsBoundingBox(this List<MeshInstance3D> nodes) {
+      var aabb = nodes
         .Select(x => x
           .GetRotatedAndTransformedAabb())
         .Aggregate((a, b) => a.Merge(b));
 
-      return aabbs.Abs().Size;
+      return aabb.Abs();
     }
 
     private static IEnumerable<Node> FindAllChildren(Node node, Func<Node, bool> predicate, List<Node> nodeList) {
