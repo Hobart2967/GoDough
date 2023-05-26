@@ -155,6 +155,21 @@ namespace GoDough.Visuals {
 
       UpdateBoundingBox();
     }
+
+    public void ColorizeMeshGroup<T>(T group, Color color)
+      where T : Enum {
+      var groupName = Enum.GetName(typeof(T), group);
+      var meshes = this
+        .FindAllChildren(x => x.IsInGroup(groupName))
+        .OfType<MeshInstance3D>();
+
+      foreach (var meshNode in meshes) {
+        // Mesh -> Surface -> Material
+        var mesh = meshNode.Mesh;
+        var surfaceMaterial = meshNode.Mesh.SurfaceGetMaterial(0);
+        surfaceMaterial.Set("albedo_color", color);
+      }
+    }
     #endregion
   }
 }
