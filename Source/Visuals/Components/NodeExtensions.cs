@@ -26,7 +26,9 @@ namespace GoDough.Visuals.Components {
         var uniqueNode = node.GetNode(String.Format("%{0}", nodeName));
         if (uniqueNode == null && !nodeBinding.NodeAttribute.IgnoreInexistent) {
           throw new NodeNotFoundException(
-            "Node with name {0} could not be found in the current scene tree.",
+            String.Format(
+              "Node with name {0} could not be found in the current scene tree.",
+              nodeName),
             nodeName);
         }
 
