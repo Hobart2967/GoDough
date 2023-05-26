@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -64,8 +65,18 @@ namespace GoDough.Visuals {
       }
     }
 
-
-    public string GroupName { get; set; } = "Mesh";
+    private string _groupName;
+    public string GroupName {
+      get {
+        return this._groupName;
+      }
+      set {
+        this._groupName = value;
+        if (this._size != Vector3.Inf) {
+          UpdateBoundingBox();
+        }
+      }
+    }
 
     private SizeCalculationMode _calculcationMode = SizeCalculationMode.Group;
     public SizeCalculationMode CalculationMode {
