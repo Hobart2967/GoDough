@@ -13,7 +13,7 @@ using System;
 namespace GoDough.Runtime {
   public class AppHost {
     #region Private Fields
-    protected Node AutoLoadNode { get; private set; }
+    public Node AutoLoadNode { get; private set; }
     #endregion
 
     public const string NodePath = "/root/DependencyInjection";
@@ -26,6 +26,7 @@ namespace GoDough.Runtime {
     public event ProcessEventHandler OnProcess;
     public event ProcessEventHandler OnPhysicsProcess;
     public event InputEventHandler OnInput;
+    public event InputEventHandler OnUnhandledInput;
 
     private static AppHost? _instance = null;
     public static AppHost? Instance {
@@ -92,6 +93,17 @@ namespace GoDough.Runtime {
 
       this.InvokeLifeCycleHooks<IOnPhysicsProcess>(x =>
         x.OnPhysicsProcess(delta));
+    }
+
+
+
+    public void UnhandledInput(InputEvent ev) {
+      if (this.OnUnhandledInput != null) {
+        this.OnUnhandledInput.Invoke(this, ev);
+      }
+
+      this.InvokeLifeCycleHooks<IOnUnhandledInput>(x =>
+        x.OnUnhandledInput(ev));
     }
 
     public void Input(InputEvent ev) {

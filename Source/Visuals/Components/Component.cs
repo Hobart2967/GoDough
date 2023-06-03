@@ -1,5 +1,7 @@
+using System;
 using Godot;
 using GoDough.Runtime;
+using GoDough.Visuals.Components.LivecycleHooks;
 
 namespace GoDough.Visuals.Components {
   public abstract class Component : Component<Node> {
@@ -17,15 +19,35 @@ namespace GoDough.Visuals.Components {
 
       this.Scene = scene;
       this.SceneRoot = sceneRoot as TSceneRoot;
+      var hooks = new Type[] {
+        typeof(IOnProcess),
+        typeof(IOnPhysicsProcess),
+        typeof(IOnUnhandledInput),
+        typeof(IOnInput)
+      };
 
-      appHost.OnProcess += (s, delta) => this.OnProcess(delta);
-      appHost.OnPhysicsProcess += (s, delta) => this.OnPhysicsProcess(delta);
-      appHost.OnInput += (s, ev) => this.OnInput(ev);
+      if (this.SceneRoot is IOnProcess) {
+        (this.SceneRoot as IOnProcess).OnProcess += (s, delta) => this.OnProcess(delta);
+      }
+
+      if (this.SceneRoot is IOnPhysicsProcess) {
+        (this.SceneRoot as IOnPhysicsProcess).OnPhysicsProcess += (s, delta) => this.OnPhysicsProcess(delta);
+      }
+
+      if (this.SceneRoot is IOnInput) {
+        (this.SceneRoot as IOnInput).OnInput += (s, ev) => this.OnInput(ev);
+      }
+
+      if (this.SceneRoot is IOnUnhandledInput) {
+        (this.SceneRoot as IOnUnhandledInput).OnUnhandledInput += (s, ev) => this.OnUnhandledInput(ev);
+      }
 
       this.OnReady();
     }
 
     public virtual void OnInput(InputEvent ev) { }
+
+    public virtual void OnUnhandledInput(InputEvent ev) { }
 
     public virtual void OnProcess(double delta) { }
 
