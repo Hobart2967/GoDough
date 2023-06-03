@@ -12,10 +12,10 @@ namespace GoDough.Visuals {
     #endregion
 
     #region Properties
-    private Vector3 _size = Vector3.Inf;
+    private Vector3 _size = Vector3.Zero;
     public Vector3 Size {
       get {
-        if (this._size == Vector3.Inf) {
+        if (this._size == Vector3.Zero) {
           UpdateBoundingBox();
         }
         return this._size;
@@ -25,7 +25,7 @@ namespace GoDough.Visuals {
     private BoundingBox? _boundingBox = null;
     public BoundingBox BoundingBox {
       get {
-        if (this._size == Vector3.Inf) {
+        if (this._size == Vector3.Zero) {
           UpdateBoundingBox();
         }
 
@@ -65,14 +65,16 @@ namespace GoDough.Visuals {
       }
     }
 
-    private string _groupName;
+    private string _groupName = "Body";
     public string GroupName {
       get {
         return this._groupName;
       }
+
       set {
         this._groupName = value;
-        if (this._size != Vector3.Inf) {
+
+        if (this._size != Vector3.Zero) {
           UpdateBoundingBox();
         }
       }
@@ -106,6 +108,11 @@ namespace GoDough.Visuals {
 
     public override void _Process(double delta) {
       if (!this._visualBoundingBox.Visible) {
+        return;
+      }
+
+      if (this._boundingBox == null) {
+        this.UpdateBoundingBox();
         return;
       }
 
@@ -149,7 +156,7 @@ namespace GoDough.Visuals {
 
     #region Private Methods
     private void UpdateBoundingBoxIfRequested() {
-      if (this._size == Vector3.Inf) {
+      if (this._size == Vector3.Zero) {
         return;
       }
 
@@ -168,6 +175,40 @@ namespace GoDough.Visuals {
         var mesh = meshNode.Mesh;
         var surfaceMaterial = meshNode.Mesh.SurfaceGetMaterial(0);
         surfaceMaterial.Set("albedo_color", color);
+      }
+    }
+
+    public void AddShaderOverlay<T>(T group, Shader shader, Dictionary<string, Variant> shaderParams = null)
+      where T : Enum {
+
+      var groupName = Enum.GetName(typeof(T), group);
+      var meshes = this
+        .FindAllChildren(x => x.IsInGroup(groupName))
+        .OfType<MeshInstance3D>();
+
+      var shaderMaterial = new ShaderMaterial();
+      shaderMaterial.Shader = shader;
+      if (shaderParams != null) {
+        foreach (var pair in shaderParams) {
+          shaderMaterial.SetShaderParameter(pair.Key, pair.Value);
+        }
+      }
+
+      foreach (var meshNode in meshes) {
+        meshNode.MaterialOverlay = shaderMaterial;
+      }
+    }
+
+    public void RemoveShaderOverlay<T>(T group)
+      where T : Enum {
+
+      var groupName = Enum.GetName(typeof(T), group);
+      var meshes = this
+        .FindAllChildren(x => x.IsInGroup(groupName))
+        .OfType<MeshInstance3D>();
+
+      foreach (var meshNode in meshes) {
+        meshNode.MaterialOverlay = null;
       }
     }
     #endregion
