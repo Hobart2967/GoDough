@@ -6,6 +6,10 @@ namespace GoDough.Runtime {
       return (PackedScene)this.LoadResource(fileName);
     }
 
+    public Shader LoadShader(string fileName) {
+      return (Shader)this.LoadResource(fileName);
+    }
+
     public Resource LoadResource(string fileName) {
       return GD.Load(fileName);
     }
