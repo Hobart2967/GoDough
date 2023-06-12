@@ -16,6 +16,16 @@ namespace GoDough.Visuals.Extensions {
       return aabb.Abs();
     }
 
+    public static T ClearAllChildren<T>(this T node) where T : Node {
+      var children = node.GetChildren();
+
+      foreach(var child in children) {
+        node.RemoveChild(child);
+      }
+
+      return node;
+    }
+
     private static IEnumerable<Node> FindAllChildren(Node node, Func<Node, bool> predicate, List<Node> nodeList) {
       foreach(var child in node.GetChildren()) {
         if (predicate(child)) {
