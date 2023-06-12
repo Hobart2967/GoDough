@@ -8,7 +8,8 @@ using GoDough.Runtime;
 
 namespace GoDough.Composition.Extensions {
   public static class NodeCompositionExtensions {
-		public static Node WireNode(this Node node) {
+		public static T WireNode<T>(this T node)
+			where T : Node {
 			try {
 				Func<Attribute, bool> isInjectionAttribute = x =>
 				x.GetType().IsAssignableFrom(typeof(InjectAttribute));

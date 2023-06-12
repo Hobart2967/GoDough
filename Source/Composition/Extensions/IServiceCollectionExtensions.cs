@@ -11,6 +11,13 @@ namespace GoDough.Composition.Extensions {
       return collection.AddSingleton<TNewMapping>(x => x.GetRequiredService<TSource>());
     }
 
+    public static IServiceCollection MapSingleton<TNewMapping>(
+      this IServiceCollection collection, Type type)
+      where TNewMapping : class {
+
+      return collection.AddSingleton<TNewMapping>(x => x.GetRequiredService(type) as TNewMapping);
+    }
+
     public static IServiceCollection AddFactory<TService, TImplementation>(this IServiceCollection services)
       where TService : class
       where TImplementation : class, TService {

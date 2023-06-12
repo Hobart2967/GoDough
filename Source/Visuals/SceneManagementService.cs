@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Godot;
+using GoDough.Runtime;
 using Microsoft.Extensions.Logging;
 
 // TODO: OnSceneChanging Event - Scene Change blocker?
@@ -17,6 +18,9 @@ namespace GoDough.Visuals {
     private readonly Dictionary<TSceneEnum, string> _registeredScenes = new Dictionary<TSceneEnum, string>();
     private readonly ILogger<SceneManagementService<TSceneEnum>> _logger;
     private readonly IAppHostNodeProvider _appHostNodeProvider;
+    private readonly IGodotApi _godotApi;
+
+    private readonly GoDough.Threading.Dispatcher _dispatcher;
     #endregion
 
     #region Properties
@@ -32,7 +36,11 @@ namespace GoDough.Visuals {
     #region Ctor
     public SceneManagementService(
       ILogger<SceneManagementService<TSceneEnum>> logger,
-      IAppHostNodeProvider appHostNodeProvider) => (_logger, _appHostNodeProvider) = (logger, appHostNodeProvider);
+      IGodotApi godotApi,
+      GoDough.Threading.Dispatcher dispatcher,
+      IAppHostNodeProvider appHostNodeProvider) =>
+      (_dispatcher, _godotApi, _logger, _appHostNodeProvider) =
+      (dispatcher, godotApi, logger, appHostNodeProvider);
     #endregion
 
     #region Events
@@ -58,12 +66,36 @@ namespace GoDough.Visuals {
       return this;
     }
 
-    public void LoadScene(TSceneEnum sceneKey) {
+    public async Task LoadScene(TSceneEnum sceneKey, PackedScene loadingScreen = null) {
       if (!this._registeredScenes.ContainsKey(sceneKey)) {
         throw new KeyNotFoundException(
           String.Format(
             "Could not find Scene with key '{0}'",
             Enum.GetName(typeof(TSceneEnum), sceneKey)));
+      }
+
+      var appHostNode = this._appHostNodeProvider.GetNode();
+      ProgressBar progressBar = null;
+
+      Action<double> progress = loadingProgress =>
+        this._dispatcher.Invoke(() => {
+          if(progressBar != null) {
+            progressBar.Value = loadingProgress;
+          }
+        });
+
+      if (loadingScreen != null) {
+        appHostNode
+          .GetTree()
+          .ChangeSceneToPacked(loadingScreen);
+
+        double progressValue = 0;
+
+        while (progressBar == null) {
+          await appHostNode.ToSignal(appHostNode.GetTree(), "process_frame");
+          progressBar = appHostNode.GetTree().CurrentScene.GetNode<ProgressBar>("%ProgressBar");
+          progressBar.Value = progressValue;
+        }
       }
 
       var fileName = this._registeredScenes[sceneKey];
@@ -75,8 +107,9 @@ namespace GoDough.Visuals {
         this._logger.LogInformation("_appHostNodeProvider null");
       }
 
-      var appHostNode = this._appHostNodeProvider.GetNode();
-      appHostNode.GetTree().ChangeSceneToFile(fileName);
+      var loadingTask = this._godotApi.LoadSceneAsync(fileName, progress);
+
+      appHostNode.GetTree().ChangeSceneToPacked(await loadingTask);
 
       var task = this.WaitForNextFrame(appHostNode, () => {
         this.CurrentScene = sceneKey;
