@@ -62,6 +62,8 @@ namespace GoDough.Visuals {
         }
 
         this.AddChild(value);
+        this._size = Vector3.Zero;
+        this._boundingBox = null;
       }
     }
 
