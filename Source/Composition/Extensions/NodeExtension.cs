@@ -6,8 +6,8 @@ using Godot;
 using GoDough.Composition.Attributes;
 using GoDough.Runtime;
 
-namespace GoDough.Composition.Extensions {
-  public static class NodeCompositionExtensions {
+namespace GoDough.Composition.Extensions; 
+public static class NodeCompositionExtensions {
 		public static T WireNode<T>(this T node)
 			where T : Node {
 			try {
@@ -38,4 +38,3 @@ namespace GoDough.Composition.Extensions {
 			}
 		}
 	}
-}

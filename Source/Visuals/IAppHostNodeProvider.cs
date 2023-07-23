@@ -1,6 +1,5 @@
 using Godot;
 
-namespace GoDough.Visuals {
-  public interface IAppHostNodeProvider : INodeProvider {
-  }
+namespace GoDough.Visuals; 
+public interface IAppHostNodeProvider : INodeProvider {
 }
