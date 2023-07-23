@@ -85,41 +85,33 @@ public virtual void ConfigureLogging(ILoggingBuilder loggingBuilder) {
 }
 
 public void PhysicsProcess(double delta) {
-  if (this.OnPhysicsProcess != null) {
-    this.OnPhysicsProcess.Invoke(this, delta);
-  }
+        this.OnPhysicsProcess?.Invoke(this, delta);
 
-  this.InvokeLifeCycleHooks<IOnPhysicsProcess>(x =>
+        this.InvokeLifeCycleHooks<IOnPhysicsProcess>(x =>
     x.OnPhysicsProcess(delta));
 }
 
 
 
 public void UnhandledInput(InputEvent ev) {
-  if (this.OnUnhandledInput != null) {
-    this.OnUnhandledInput.Invoke(this, ev);
-  }
+        this.OnUnhandledInput?.Invoke(this, ev);
 
-  this.InvokeLifeCycleHooks<IOnUnhandledInput>(x =>
+        this.InvokeLifeCycleHooks<IOnUnhandledInput>(x =>
     x.OnUnhandledInput(ev));
 }
 
 public void Input(InputEvent ev) {
-  if (this.OnInput != null) {
-    this.OnInput.Invoke(this, ev);
-  }
+        this.OnInput?.Invoke(this, ev);
 
-  this.InvokeLifeCycleHooks<IOnInput>(x =>
+        this.InvokeLifeCycleHooks<IOnInput>(x =>
     x.OnInput(ev));
 }
 
 
 public void Process(double delta) {
-  if (this.OnProcess != null) {
-    this.OnProcess.Invoke(this, delta);
-  }
+        this.OnProcess?.Invoke(this, delta);
 
-  this.InvokeLifeCycleHooks<IOnProcess>(x =>
+        this.InvokeLifeCycleHooks<IOnProcess>(x =>
     x.OnProcess(delta));
 }
 #endregion

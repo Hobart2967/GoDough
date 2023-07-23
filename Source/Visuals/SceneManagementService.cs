@@ -114,13 +114,11 @@ public async Task LoadScene(TSceneEnum sceneKey, PackedScene loadingScreen = nul
   var task = this.WaitForNextFrame(appHostNode, () => {
     this.CurrentScene = sceneKey;
 
-    if (this.OnSceneChanged != null) {
-        this.OnSceneChanged.Invoke(
+      this.OnSceneChanged?.Invoke(
         this,
         new SceneChangeEventArgs<TSceneEnum>(sceneKey));
-    }
 
-    this._logger.LogInformation("Done Loading Scene '{0}'",
+      this._logger.LogInformation("Done Loading Scene '{0}'",
       Enum.GetName(typeof(TSceneEnum), sceneKey),
       fileName);
   });
