@@ -12,7 +12,7 @@ private class ActionOrFunc {
   public TaskCompletionSource<object> Completion { get; set; }
 }
 
-private ConcurrentDictionary<string, ActionOrFunc> _actions = new ConcurrentDictionary<string, ActionOrFunc>();
+private ConcurrentDictionary<string, ActionOrFunc> _actions = new();
 
     public void Invoke(Action action) => this._actions[Guid.NewGuid().ToString()] = new ActionOrFunc
     {

@@ -15,7 +15,7 @@ where TSceneEnum : System.Enum {
 public delegate void SceneChangeEventHandler(object sender, SceneChangeEventArgs<TSceneEnum> e);
 
 #region Private Fields
-private readonly Dictionary<TSceneEnum, string> _registeredScenes = new Dictionary<TSceneEnum, string>();
+private readonly Dictionary<TSceneEnum, string> _registeredScenes = new();
 private readonly ILogger<SceneManagementService<TSceneEnum>> _logger;
 private readonly IAppHostNodeProvider _appHostNodeProvider;
 private readonly IGodotApi _godotApi;

@@ -7,8 +7,8 @@ using GoDough.Runtime.LivecycleHooks;
 
 namespace GoDough.Runtime; 
 internal class GodotApi : IGodotApi {
-private readonly Dictionary<string, List<Action<double>>> _threadedResourceLoadProgress = new Dictionary<string, List<Action<double>>>();
-private readonly Dictionary<string, Task<Resource>> _resourceLoadTasks = new Dictionary<string, Task<Resource>>();
+private readonly Dictionary<string, List<Action<double>>> _threadedResourceLoadProgress = new();
+private readonly Dictionary<string, Task<Resource>> _resourceLoadTasks = new();
 private readonly Timer _timer;
 
 public GodotApi(AppHost appHost) {

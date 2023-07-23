@@ -8,7 +8,7 @@ public static class Vector3Extensions {
       this Vector3 source,
       Nullable<float> x,
       Nullable<float> y = null,
-      Nullable<float> z = null) => new Vector3(
+      Nullable<float> z = null) => new(
         x ?? source.X,
         y ?? source.Y,
         z ?? source.Z);
