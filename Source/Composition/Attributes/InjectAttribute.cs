@@ -1,6 +1,8 @@
 using System;
 
-namespace GoDough.Composition.Attributes; 
+namespace GoDough.Composition.Attributes;
+
 [AttributeUsage(AttributeTargets.Property)]
-public class InjectAttribute : Attribute {
+public class InjectAttribute : Attribute
+{
 }

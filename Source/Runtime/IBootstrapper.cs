@@ -1,4 +1,6 @@
-namespace GoDough.Runtime; 
-public interface IBootstrapper {
-public void Run();
+namespace GoDough.Runtime;
+
+public interface IBootstrapper
+{
+  public void Run();
 }
