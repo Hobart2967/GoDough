@@ -1,56 +1,59 @@
-using System;
 using Godot;
 
-namespace GoDough.Visuals.Extensions {
-  public static class AabbExtensions {
-    public static Mesh ConvertToMesh(this Aabb input, Color color) {
-      var source = new {
-        Position = new Vector3(-(input.Size.X / 2), 0, -(input.Size.Z / 2)),
-        End = input.Size.CopyWith(input.Size.X / 2, null, input.Size.Z / 2)
-      };
+namespace GoDough.Visuals.Extensions;
 
-      var bottomLeftFront = source.Position;
-      var bottomRightFront = new Vector3(source.End.X, source.Position.Y, source.Position.Z);
-      var topRightFront = new Vector3(source.End.X, source.End.Y, source.Position.Z);
-      var topLeftFront = new Vector3(source.Position.X, source.End.Y, source.Position.Z);
-      var topLeftBack = new Vector3(source.Position.X, source.End.Y, source.End.Z);
-      var topRightBack = new Vector3(source.End.X, source.End.Y, source.End.Z);
-      var bottomRightBack = new Vector3(source.End.X, source.Position.Y, source.End.Z);
-      var bottomLeftBack = new Vector3(source.Position.X, source.Position.Y, source.End.Z);
+public static class AabbExtensions
+{
+  public static Mesh ConvertToMesh(this Aabb input, Color color)
+  {
+    var source = new
+    {
+      Position = new Vector3(-(input.Size.X / 2), 0, -(input.Size.Z / 2)),
+      End = input.Size.CopyWith(input.Size.X / 2, null, input.Size.Z / 2)
+    };
 
-      var vertices = new Vector3[]{
-        topRightFront,    topLeftFront,
-        topLeftBack,      topRightBack,
+    var bottomLeftFront = source.Position;
+    var bottomRightFront = new Vector3(source.End.X, source.Position.Y, source.Position.Z);
+    var topRightFront = new Vector3(source.End.X, source.End.Y, source.Position.Z);
+    var topLeftFront = new Vector3(source.Position.X, source.End.Y, source.Position.Z);
+    var topLeftBack = new Vector3(source.Position.X, source.End.Y, source.End.Z);
+    var topRightBack = new Vector3(source.End.X, source.End.Y, source.End.Z);
+    var bottomRightBack = new Vector3(source.End.X, source.Position.Y, source.End.Z);
+    var bottomLeftBack = new Vector3(source.Position.X, source.Position.Y, source.End.Z);
 
-        bottomRightBack,  bottomLeftBack,
-        bottomLeftFront,  bottomRightFront,
+    var vertices = new Vector3[]{
+    topRightFront,    topLeftFront,
+    topLeftBack,      topRightBack,
 
-        topLeftFront,     topLeftBack,
-        topRightFront,    topRightBack,
+    bottomRightBack,  bottomLeftBack,
+    bottomLeftFront,  bottomRightFront,
 
-        bottomLeftFront,  bottomLeftBack,
-        bottomRightFront, bottomRightBack,
+    topLeftFront,     topLeftBack,
+    topRightFront,    topRightBack,
 
-        topLeftFront,     bottomLeftFront,
-        topLeftBack,      bottomLeftBack,
+    bottomLeftFront,  bottomLeftBack,
+    bottomRightFront, bottomRightBack,
 
-        topRightFront,    bottomRightFront,
-        topRightBack,     bottomRightBack,
-      };
+    topLeftFront,     bottomLeftFront,
+    topLeftBack,      bottomLeftBack,
 
-      var mesh = new ImmediateMesh();
-      var material = new OrmMaterial3D();
-      material.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
-      material.AlbedoColor = color;
+    topRightFront,    bottomRightFront,
+    topRightBack,     bottomRightBack,
+  };
 
-      mesh.SurfaceBegin(Mesh.PrimitiveType.Lines, material);
-      for (var i = 0; i < vertices.Length; i++) {
-        mesh.SurfaceSetColor(color);
-        mesh.SurfaceAddVertex(vertices[i]);
-      }
-      mesh.SurfaceEnd();
+    var mesh = new ImmediateMesh();
+    var material = new OrmMaterial3D();
+    material.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
+    material.AlbedoColor = color;
 
-      return mesh;
+    mesh.SurfaceBegin(Mesh.PrimitiveType.Lines, material);
+    for (var i = 0; i < vertices.Length; i++)
+    {
+      mesh.SurfaceSetColor(color);
+      mesh.SurfaceAddVertex(vertices[i]);
     }
+    mesh.SurfaceEnd();
+
+    return mesh;
   }
 }

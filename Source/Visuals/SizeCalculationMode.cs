@@ -1,6 +1,7 @@
-namespace GoDough.Visuals {
-  public enum SizeCalculationMode {
-    Group,
-    Children
-  }
+namespace GoDough.Visuals;
+
+public enum SizeCalculationMode
+{
+  Group,
+  Children
 }
