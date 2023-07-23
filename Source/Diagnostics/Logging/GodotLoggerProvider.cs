@@ -15,7 +15,5 @@ private readonly ConcurrentDictionary<string, GodotLogger> _loggers =
 public ILogger CreateLogger(string categoryName) =>
   _loggers.GetOrAdd(categoryName, name => new GodotLogger(name));
 
-public void Dispose() {
-  _loggers.Clear();
-}
+    public void Dispose() => _loggers.Clear();
 }

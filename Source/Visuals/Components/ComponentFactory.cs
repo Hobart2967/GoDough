@@ -42,9 +42,7 @@ public object Create(Type type) {
   return component;
 }
 
-public T Create<T, TNodeType>()
-  where T : Component<TNodeType>
-  where TNodeType : Node {
-  return this.Create(typeof(T)) as T;
-}
+    public T Create<T, TNodeType>()
+      where T : Component<TNodeType>
+      where TNodeType : Node => this.Create(typeof(T)) as T;
 }

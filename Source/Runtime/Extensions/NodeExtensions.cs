@@ -9,7 +9,5 @@ public static async Task WaitForNextFrame(this Node node, Action value) {
   value();
 }
 
-public static async Task WaitForNextFrame(this Node node) {
-  await node.ToSignal(node.GetTree(), "process_frame");
-}
+    public static async Task WaitForNextFrame(this Node node) => await node.ToSignal(node.GetTree(), "process_frame");
 }

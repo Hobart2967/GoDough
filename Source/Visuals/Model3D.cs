@@ -101,12 +101,10 @@ public Model3D() {
   this._visualBoundingBox.Visible = false;
   this.AddChild(this._visualBoundingBox);
 }
-#endregion
+    #endregion
 
-#region Callbacks
-public override void _Ready() {
-  this.UpdateBoundingBoxIfRequested();
-}
+    #region Callbacks
+    public override void _Ready() => this.UpdateBoundingBoxIfRequested();
 
 public override void _Process(double delta) {
   if (!this._visualBoundingBox.Visible) {
@@ -130,8 +128,8 @@ public override void _ExitTree(){
 }
 #endregion
 
-#region Public Methods
-public void UpdateBoundingBox() {
+    #region Public Methods
+    public void UpdateBoundingBox() {
   var nodes = new List<MeshInstance3D>();
   var children = this.GetChildren().OfType<MeshInstance3D>();
   if (this.CalculationMode == SizeCalculationMode.Children && children.Count() == 1) {

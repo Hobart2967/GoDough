@@ -14,13 +14,12 @@ private class ActionOrFunc {
 
 private ConcurrentDictionary<string, ActionOrFunc> _actions = new ConcurrentDictionary<string, ActionOrFunc>();
 
-public void Invoke(Action action) {
-  this._actions[Guid.NewGuid().ToString()] = new ActionOrFunc {
-    Action = action
-  };
-}
+    public void Invoke(Action action) => this._actions[Guid.NewGuid().ToString()] = new ActionOrFunc
+    {
+        Action = action
+    };
 
-public Task<T> Invoke<T>(Func<T> func) where T : class {
+    public Task<T> Invoke<T>(Func<T> func) where T : class {
   var completionSource = new TaskCompletionSource<object>();
   this._actions[Guid.NewGuid().ToString()] = new ActionOrFunc {
     Func = func as Func<object>,

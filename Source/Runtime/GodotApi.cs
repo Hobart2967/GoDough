@@ -20,23 +20,15 @@ public GodotApi(AppHost appHost) {
   this._timer.Timeout += () => this.OnProcess();
   this._timer.Start();
 }
-public PackedScene LoadScene(string fileName) {
-  return (PackedScene)this.LoadResource(fileName);
-}
+    public PackedScene LoadScene(string fileName) => (PackedScene)this.LoadResource(fileName);
 
-public async Task<PackedScene> LoadSceneAsync(string fileName, Action<double> progress = null) {
-  return (PackedScene)(await this.LoadResourceAsync(fileName, progress));
-}
+    public async Task<PackedScene> LoadSceneAsync(string fileName, Action<double> progress = null) => (PackedScene)(await this.LoadResourceAsync(fileName, progress));
 
-public async Task<Shader> LoadShaderAsync(string fileName, Action<double> progress = null) {
-  return (Shader)(await this.LoadResourceAsync(fileName, progress));
-}
+    public async Task<Shader> LoadShaderAsync(string fileName, Action<double> progress = null) => (Shader)(await this.LoadResourceAsync(fileName, progress));
 
-public Resource LoadResource(string fileName) {
-  return this.LoadResourceAsync(fileName).Result;
-}
+    public Resource LoadResource(string fileName) => this.LoadResourceAsync(fileName).Result;
 
-public Task<Resource> LoadResourceAsync(string fileName, Action<double> progress = null) {
+    public Task<Resource> LoadResourceAsync(string fileName, Action<double> progress = null) {
   if (progress != null) {
     if(!this._threadedResourceLoadProgress.ContainsKey(fileName)) {
       this._threadedResourceLoadProgress[fileName] = new List<Action<double>>();
@@ -58,11 +50,9 @@ public Task<Resource> LoadResourceAsync(string fileName, Action<double> progress
   return this._resourceLoadTasks[fileName];
 }
 
-public Shader LoadShader(string fileName) {
-  return (Shader)this.LoadResource(fileName);
-}
+    public Shader LoadShader(string fileName) => (Shader)this.LoadResource(fileName);
 
-public void OnProcess() {
+    public void OnProcess() {
   var keysToRemove = new List<string>();
   foreach (var progressInfo in this._threadedResourceLoadProgress) {
     var progressArray = new Godot.Collections.Array();

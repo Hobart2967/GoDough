@@ -9,11 +9,9 @@ private readonly Func<T> _initFunc;
 #region Ctor
 public Factory(Func<T> initFunc) =>
   (_initFunc) = (initFunc);
-#endregion
+    #endregion
 
-#region Public Methods
-public T Create() {
-  return _initFunc();
-}
-#endregion
+    #region Public Methods
+    public T Create() => _initFunc();
+    #endregion
 }

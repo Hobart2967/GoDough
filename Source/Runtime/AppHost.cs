@@ -68,14 +68,12 @@ public virtual void ConfigureLogging(ILoggingBuilder loggingBuilder) {
   loggingBuilder.SetMinimumLevel(LogLevel.Trace);
 }
 
-public virtual void ConfigureServices(IServiceCollection services) {
-  services
-    .AddSingleton<IAppHostNodeProvider, AppHostNodeProvider>(x =>
-      new AppHostNodeProvider(() => this.AutoLoadNode))
-    .AddSingleton(typeof(SceneManagementService<>));
-}
+    public virtual void ConfigureServices(IServiceCollection services) => services
+        .AddSingleton<IAppHostNodeProvider, AppHostNodeProvider>(x =>
+          new AppHostNodeProvider(() => this.AutoLoadNode))
+        .AddSingleton(typeof(SceneManagementService<>));
 
-private void Boot() {
+    private void Boot() {
   var logger = this.Application.Services.GetService<ILogger<AppHost>>();
 
   var bootstrappers = this.Application.Services.GetServices<IBootstrapper>();

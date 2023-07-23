@@ -2,17 +2,16 @@ using Godot;
 
 namespace GoDough.Visuals.Extensions; 
 public static class VisualInstance3DExtensions {
-public static Aabb GetGlobalAabb(this MeshInstance3D visualInstance3D) {
-  // From PR:
-  //
-  // https://github.com/godotengine/godot/pull/66940
-  //
-  // get_global_transform().xform(get_aabb());
+    public static Aabb GetGlobalAabb(this MeshInstance3D visualInstance3D) =>
+      // From PR:
+      //
+      // https://github.com/godotengine/godot/pull/66940
+      //
+      // get_global_transform().xform(get_aabb());
 
-  return visualInstance3D.GlobalTransform * visualInstance3D.GetAabb();
-}
+      visualInstance3D.GlobalTransform * visualInstance3D.GetAabb();
 
-public static Aabb GetRotatedAndTransformedAabb(this MeshInstance3D visualInstance3D) {
+    public static Aabb GetRotatedAndTransformedAabb(this MeshInstance3D visualInstance3D) {
   var source = visualInstance3D.Mesh.GetAabb();
 
   var vertices = new Vector3[]{

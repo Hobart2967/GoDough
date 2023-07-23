@@ -10,11 +10,9 @@ private readonly Func<Node> _nodeResolver;
 #region Ctor
 public NodeProvider(Func<Node> nodeResolver) =>
   (_nodeResolver) = (nodeResolver);
-#endregion
+    #endregion
 
-#region Public Methods
-public Node GetNode() {
-  return this._nodeResolver();
-}
-#endregion
+    #region Public Methods
+    public Node GetNode() => this._nodeResolver();
+    #endregion
 }
