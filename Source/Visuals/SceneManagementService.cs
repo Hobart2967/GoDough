@@ -93,7 +93,11 @@ namespace GoDough.Visuals {
 
         while (progressBar == null) {
           await appHostNode.ToSignal(appHostNode.GetTree(), "process_frame");
-          progressBar = appHostNode.GetTree().CurrentScene.GetNode<ProgressBar>("%ProgressBar");
+          var sceneTree = appHostNode.GetTree().CurrentScene;
+          if (sceneTree == null) {
+            continue;
+          }
+          progressBar = sceneTree.GetNode<ProgressBar>("%ProgressBar");
           progressBar.Value = progressValue;
         }
       }
