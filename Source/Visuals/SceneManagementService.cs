@@ -65,8 +65,19 @@ namespace GoDough.Visuals {
 
       return this;
     }
+    public TaskWithProgress<PackedScene> LoadPackedScene(TSceneEnum sceneKey, PackedScene loadingScreen = null, Task innerLoading = null, Progress<double> innerLoadingProgress = null) {
+      if (!this._registeredScenes.ContainsKey(sceneKey)) {
+        throw new KeyNotFoundException(
+          String.Format(
+            "Could not find Scene with key '{0}'",
+            Enum.GetName(typeof(TSceneEnum), sceneKey)));
+      }
 
-    public async Task LoadScene(TSceneEnum sceneKey, PackedScene loadingScreen = null) {
+      var fileName = this._registeredScenes[sceneKey];
+      return this._godotApi.LoadSceneAsync(fileName);
+    }
+
+    public async Task<PackedScene> LoadScene(TSceneEnum sceneKey, PackedScene loadingScreen = null, Progress<double> innerLoadingProgress = null) {
       if (!this._registeredScenes.ContainsKey(sceneKey)) {
         throw new KeyNotFoundException(
           String.Format(
@@ -79,7 +90,7 @@ namespace GoDough.Visuals {
 
       Action<double> progress = loadingProgress =>
         this._dispatcher.Invoke(() => {
-          if(progressBar != null) {
+          if (progressBar != null) {
             progressBar.Value = loadingProgress;
           }
         });
@@ -111,11 +122,29 @@ namespace GoDough.Visuals {
         this._logger.LogInformation("_appHostNodeProvider null");
       }
 
-      var loadingTask = this._godotApi.LoadSceneAsync(fileName, progress);
+      var task = this._godotApi.LoadSceneAsync(fileName);
+      if (innerLoadingProgress != null) {
+        innerLoadingProgress.ProgressChanged += (s, e) => progress(e);
+      }
 
-      appHostNode.GetTree().ChangeSceneToPacked(await loadingTask);
+      return await task;
+    }
 
-      var task = this.WaitForNextFrame(appHostNode, () => {
+    public async Task LoadAndEnableScene(TSceneEnum sceneKey, PackedScene loadingScreen = null, Task innerLoading = null, Progress<double> innerLoadingProgress = null) {
+      var scene = await this.LoadScene(sceneKey, loadingScreen, innerLoadingProgress);
+      await this.EnableScene(scene, sceneKey, innerLoading);
+    }
+
+    public async Task EnableScene(PackedScene sceneToEnable, TSceneEnum sceneKey, Task innerLoading = null) {
+      var appHostNode = this._appHostNodeProvider.GetNode();
+
+      if (innerLoading != null) {
+        await innerLoading;
+      }
+
+      appHostNode.GetTree().ChangeSceneToPacked(sceneToEnable);
+
+      await this.WaitForNextFrame(appHostNode, () => {
         this.CurrentScene = sceneKey;
 
         if (this.OnSceneChanged != null) {
@@ -124,9 +153,8 @@ namespace GoDough.Visuals {
             new SceneChangeEventArgs<TSceneEnum>(sceneKey));
         }
 
-        this._logger.LogInformation("Done Loading Scene '{0}'",
-          Enum.GetName(typeof(TSceneEnum), sceneKey),
-          fileName);
+        this._logger.LogInformation("Done Enabling Scene '{0}'",
+          Enum.GetName(typeof(TSceneEnum), sceneKey));
       });
     }
 

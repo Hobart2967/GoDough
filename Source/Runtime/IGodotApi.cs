@@ -7,7 +7,7 @@ namespace GoDough.Runtime {
     Shader LoadShader(string fileName);
     PackedScene LoadScene(string fileName);
 
-    Task<Shader> LoadShaderAsync(string fileName, Action<double> progress = null);
-    Task<PackedScene> LoadSceneAsync(string fileName, Action<double> progress = null);
+    TaskWithProgress<Shader> LoadShaderAsync(string fileName);
+    TaskWithProgress<PackedScene> LoadSceneAsync(string fileName);
   }
 }
