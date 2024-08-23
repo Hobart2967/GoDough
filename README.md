@@ -1,7 +1,5 @@
 # Godot Utilities
 
-See [Wiki](https://github.com/Hobart2967/GoDough/wiki) for documentation
-
 Utility library for implement state of the art application development in Godot 4. Includes:
 
 - Using .NET Standards:
@@ -11,4 +9,4 @@ Utility library for implement state of the art application development in Godot 
 - General utilities for Godot:
   - Node Extension Methods
 
-
+See [Wiki](https://github.com/Hobart2967/GoDough/wiki) for documentation
