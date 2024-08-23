@@ -1,6 +1,6 @@
 # Godot Utilities
 
-See [Wiki](./wiki) for documentation
+See [Wiki](https://github.com/Hobart2967/GoDough/wiki) for documentation
 
 Utility library for implement state of the art application development in Godot 4. Includes:
 
