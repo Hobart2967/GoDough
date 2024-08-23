@@ -1,0 +1,47 @@
+name: Build & Release
+on: push
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  on_push:
+    permissions:
+      contents: write
+      packages: write
+    name: On Push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.8.1
+      - name: Setup xmlstarlet
+        run: sudo apt update && apt install -y xmlstarlet
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 6.0.421
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+      - name: Build
+        run: dotnet build --configuration Release
+      - name: Test
+        run: dotnet test --configuration Release --no-build
+      - name: Publish package
+        run: |
+          npx \
+            --package @semantic-release/commit-analyzer \
+            --package @semantic-release/release-notes-generator \
+            --package @semantic-release/github \
+            --package @semantic-release/exec \
+            --package @semantic-release/git \
+            semantic-release
+        if: github.ref_name == 'main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
