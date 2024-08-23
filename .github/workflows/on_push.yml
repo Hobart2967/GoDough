@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 20.8.1
       - name: Setup xmlstarlet
-        run: sudo apt update && apt install -y xmlstarlet
+        run: sudo apt update && sudo apt install -y xmlstarlet
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
         with:
