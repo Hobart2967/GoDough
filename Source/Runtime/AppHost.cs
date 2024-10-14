@@ -10,8 +10,10 @@ using GoDough.Diagnostics.Logging;
 using GoDough.Visuals;
 using System;
 
-namespace GoDough.Runtime {
-  public class AppHost {
+namespace GoDough.Runtime
+{
+  public class AppHost
+  {
     #region Private Fields
     public Node AutoLoadNode { get; private set; }
     #endregion
@@ -29,13 +31,15 @@ namespace GoDough.Runtime {
     public event InputEventHandler OnUnhandledInput;
 
     private static AppHost? _instance = null;
-    public static AppHost? Instance {
+    public static AppHost? Instance
+    {
       get { return AppHost._instance; }
     }
     #endregion
 
     #region Ctor
-    public AppHost(Node autoLoadNode) {
+    public AppHost(Node autoLoadNode)
+    {
       this.AutoLoadNode = autoLoadNode;
 
       AppHost._instance = AppHost.Instance ?? this;
@@ -43,7 +47,8 @@ namespace GoDough.Runtime {
     #endregion
 
     #region Public Methods
-    public void Start() {
+    public void Start(Boolean deferBoot = false)
+    {
       GD.Print("[GoDough] Building AppHost");
       var builder = Host.CreateDefaultBuilder(null);
 
@@ -55,39 +60,49 @@ namespace GoDough.Runtime {
       GD.Print("[GoDough] Sealing AppHost");
       this.Application = builder.Build();
 
-      this.Boot();
+      if (!deferBoot)
+      {
+        this.Boot();
+      }
     }
 
-    public virtual void ConfigureLogging(ILoggingBuilder loggingBuilder) {
+    public virtual void ConfigureLogging(ILoggingBuilder loggingBuilder)
+    {
       loggingBuilder.AddGodotLogger();
 
-      if (!OS.IsDebugBuild()) {
+      if (!OS.IsDebugBuild())
+      {
         return;
       }
 
       loggingBuilder.SetMinimumLevel(LogLevel.Trace);
     }
 
-    public virtual void ConfigureServices(IServiceCollection services) {
+    public virtual void ConfigureServices(IServiceCollection services)
+    {
       services
         .AddSingleton<IAppHostNodeProvider, AppHostNodeProvider>(x =>
           new AppHostNodeProvider(() => this.AutoLoadNode))
         .AddSingleton(typeof(SceneManagementService<>));
     }
 
-    private void Boot() {
+    public void Boot()
+    {
       var logger = this.Application.Services.GetService<ILogger<AppHost>>();
 
       var bootstrappers = this.Application.Services.GetServices<IBootstrapper>();
       logger.LogInformation("Booting App with {0} Bootstrappers", bootstrappers.Count());
 
-      foreach(var service in bootstrappers) {
+      foreach (var service in bootstrappers)
+      {
         service.Run();
       }
     }
 
-    public void PhysicsProcess(double delta) {
-      if (this.OnPhysicsProcess != null) {
+    public void PhysicsProcess(double delta)
+    {
+      if (this.OnPhysicsProcess != null)
+      {
         this.OnPhysicsProcess.Invoke(this, delta);
       }
 
@@ -97,8 +112,10 @@ namespace GoDough.Runtime {
 
 
 
-    public void UnhandledInput(InputEvent ev) {
-      if (this.OnUnhandledInput != null) {
+    public void UnhandledInput(InputEvent ev)
+    {
+      if (this.OnUnhandledInput != null)
+      {
         this.OnUnhandledInput.Invoke(this, ev);
       }
 
@@ -106,8 +123,10 @@ namespace GoDough.Runtime {
         x.OnUnhandledInput(ev));
     }
 
-    public void Input(InputEvent ev) {
-      if (this.OnInput != null) {
+    public void Input(InputEvent ev)
+    {
+      if (this.OnInput != null)
+      {
         this.OnInput.Invoke(this, ev);
       }
 
@@ -116,8 +135,10 @@ namespace GoDough.Runtime {
     }
 
 
-    public void Process(double delta) {
-      if (this.OnProcess != null) {
+    public void Process(double delta)
+    {
+      if (this.OnProcess != null)
+      {
         this.OnProcess.Invoke(this, delta);
       }
 
@@ -127,9 +148,11 @@ namespace GoDough.Runtime {
     #endregion
 
     #region Private Methods
-    private void InvokeLifeCycleHooks<T>(Action<T> action) {
+    private void InvokeLifeCycleHooks<T>(Action<T> action)
+    {
       var framebasedServices = this.Application.Services.GetServices<T>();
-      foreach(var service in framebasedServices) {
+      foreach (var service in framebasedServices)
+      {
         action(service);
       }
     }
